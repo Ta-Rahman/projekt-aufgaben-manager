@@ -1,0 +1,26 @@
+# Lokale Entwicklungsdatenbank.
+# Zugangsdaten sind reine DEMO-Werte für die lokale Entwicklung, kein Geheimnis.
+name: aufgaben-manager
+
+services:
+  postgres:
+    image: postgres:18
+    environment:
+      POSTGRES_DB: aufgaben_manager
+      POSTGRES_USER: demo_user
+      POSTGRES_PASSWORD: demo_passwort_nur_lokal
+    ports:
+      # Host-Port per Umgebungsvariable DB_PORT änderbar, Standard 5434
+      # (5432/5433 sind auf dem Entwicklungsrechner oft schon belegt).
+      - "127.0.0.1:${DB_PORT:-5434}:5432"
+    volumes:
+      # Ab PostgreSQL 18 wird das Elternverzeichnis gemountet, nicht mehr .../data.
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U demo_user -d aufgaben_manager"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  pgdata:

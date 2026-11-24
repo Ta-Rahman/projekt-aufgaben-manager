@@ -43,14 +43,22 @@ Backend auf Port 8080 weiter.
 Die Datenbank ist auf `localhost:5434` erreichbar (Port per Umgebungsvariable `DB_PORT` änderbar)
 und läuft nach dem Beenden des Backends weiter. Stoppen mit `docker compose down`.
 
-### Demo-Zugang (vorläufig)
+### Demo-Zugänge
 
-| Benutzer | Passwort |
-|---|---|
-| `demo` | `demo` |
+Beim ersten Start legt die Migration `V2__seed.sql` eine Beispielorganisation mit Projekten,
+Aufgaben und folgenden Benutzern an. Das Passwort ist bei allen `demo`.
 
-Die Datenbank-Zugangsdaten in `docker-compose.yml` und der Demo-Benutzer sind reine Demo-Werte für
-die lokale Entwicklung. Der Demo-Benutzer wird durch eine Benutzerverwaltung ersetzt.
+| Benutzer | Rolle | Bemerkung |
+|---|---|---|
+| `admin` | Administration | sieht alle Projekte, verwaltet Benutzer |
+| `leitung` | Projektleitung | leitet „Relaunch Kundenportal“ und das archivierte Projekt |
+| `leitung2` | Projektleitung | leitet „Migration Mailserver“ |
+| `mitarbeiter` | Mitarbeit | Mitglied in allen drei Projekten |
+| `mitarbeiter2` | Mitarbeit | nur Mitglied in „Migration Mailserver“ |
+| `ehemalig` | Mitarbeit | deaktiviert, Anmeldung nicht möglich |
+
+Die Datenbank-Zugangsdaten in `docker-compose.yml` und die Demo-Passwörter sind reine Demo-Werte
+für die lokale Entwicklung.
 
 ## Tests
 

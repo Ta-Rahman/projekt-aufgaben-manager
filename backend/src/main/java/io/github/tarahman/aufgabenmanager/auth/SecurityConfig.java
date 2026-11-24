@@ -6,11 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
@@ -26,6 +23,8 @@ import org.springframework.security.web.authentication.logout.HttpStatusReturnin
  *       bei ändernden Anfragen im Header {@code X-XSRF-TOKEN} zurück.</li>
  *   <li>{@code /api/**} erfordert Anmeldung und antwortet mit Statuscodes statt Weiterleitungen,
  *       alles andere (gebautes Frontend, statische Dateien) ist frei.</li>
+ *   <li>Benutzer kommen aus der Datenbank ({@link AppUserDetailsService}); Spring Security verbindet
+ *       den einzigen {@code UserDetailsService} und den {@code PasswordEncoder} automatisch mit dem Login.</li>
  * </ul>
  */
 @Configuration
@@ -62,19 +61,6 @@ public class SecurityConfig {
 	PasswordEncoder passwordEncoder() {
 		// Standard-Encoder mit Präfix ({bcrypt}...), damit der Algorithmus später gewechselt werden kann.
 		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-	}
-
-	/**
-	 * VORLÄUFIG: fest eingebauter Demo-Benutzer, nur bis das Benutzermodell (Tabelle, Entität,
-	 * eigener UserDetailsService) entworfen und umgesetzt ist. Zugangsdaten sind reine Demo-Werte.
-	 */
-	@Bean
-	UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
-		return new InMemoryUserDetailsManager(
-				User.withUsername("demo")
-					.password(passwordEncoder.encode("demo"))
-					.roles("DEMO")
-					.build());
 	}
 
 }

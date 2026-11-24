@@ -12,7 +12,7 @@ import org.testcontainers.utility.DockerImageName;
  * direkt aus dem gestarteten Container übernimmt.
  */
 @TestConfiguration(proxyBeanMethods = false)
-class TestcontainersConfiguration {
+public class TestcontainersConfiguration {
 
 	@Bean
 	@ServiceConnection

@@ -38,4 +38,14 @@ class AufgabenManagerApplicationTests {
 		assertThat(flyway.info()).isNotNull();
 	}
 
+	@Test
+	void seedDatenSindEingespielt() {
+		assertThat(flyway.info().current().getVersion().getVersion()).isEqualTo("2");
+		assertThat(jdbcTemplate.queryForObject("SELECT count(*) FROM organisation", Integer.class)).isEqualTo(1);
+		assertThat(jdbcTemplate.queryForObject("SELECT count(*) FROM app_user", Integer.class)).isEqualTo(6);
+		assertThat(jdbcTemplate.queryForObject("SELECT count(*) FROM project WHERE archived_at IS NULL", Integer.class))
+			.isEqualTo(2);
+		assertThat(jdbcTemplate.queryForObject("SELECT count(*) FROM task", Integer.class)).isEqualTo(10);
+	}
+
 }

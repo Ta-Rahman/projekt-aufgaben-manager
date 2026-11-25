@@ -14,6 +14,7 @@ import io.github.tarahman.aufgabenmanager.common.OrganisationRepository;
 import io.github.tarahman.aufgabenmanager.user.BenutzerDtos.BenutzerAendern;
 import io.github.tarahman.aufgabenmanager.user.BenutzerDtos.BenutzerAnlegen;
 import io.github.tarahman.aufgabenmanager.user.BenutzerDtos.BenutzerAntwort;
+import io.github.tarahman.aufgabenmanager.user.BenutzerDtos.BenutzerAuswahl;
 
 /**
  * Benutzerverwaltung (US1). Wer das darf (nur ADMIN), prüft der Controller per {@code @PreAuthorize};
@@ -45,6 +46,15 @@ public class UserService {
 		return userRepository.findByOrganisationIdOrderByDisplayNameAsc(angemeldet.getOrganisationId())
 			.stream()
 			.map(BenutzerAntwort::von)
+			.toList();
+	}
+
+	/** Nur aktive Benutzer: Deaktivierte sind nicht auswählbar (D6). Ohne Benutzername und Status. */
+	@Transactional(readOnly = true)
+	public List<BenutzerAuswahl> auswahl(CurrentUser angemeldet) {
+		return userRepository.findByOrganisationIdAndActiveTrueOrderByDisplayNameAsc(angemeldet.getOrganisationId())
+			.stream()
+			.map(u -> new BenutzerAuswahl(u.getId(), u.getDisplayName(), u.getRole()))
 			.toList();
 	}
 

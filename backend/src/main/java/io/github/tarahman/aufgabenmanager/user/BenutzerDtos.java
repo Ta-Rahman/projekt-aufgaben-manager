@@ -26,6 +26,10 @@ public final class BenutzerDtos {
 
 	}
 
+	/** Eintrag für Auswahllisten; für alle Angemeldeten sichtbar, daher nur das Nötigste. */
+	public record BenutzerAuswahl(Long id, String anzeigename, Role rolle) {
+	}
+
 	public record BenutzerAnlegen(
 			@NotBlank(message = "Benutzername fehlt")
 			@Size(min = 3, max = 50, message = "Benutzername muss 3 bis 50 Zeichen lang sein")

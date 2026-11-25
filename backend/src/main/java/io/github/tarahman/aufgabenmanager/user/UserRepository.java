@@ -19,6 +19,8 @@ public interface UserRepository extends JpaRepository<AppUser, Long> {
 
 	List<AppUser> findByOrganisationIdOrderByDisplayNameAsc(Long organisationId);
 
+	List<AppUser> findByOrganisationIdAndActiveTrueOrderByDisplayNameAsc(Long organisationId);
+
 	Optional<AppUser> findByIdAndOrganisationId(Long id, Long organisationId);
 
 }

@@ -18,6 +18,7 @@ import io.github.tarahman.aufgabenmanager.auth.CurrentUser;
 import io.github.tarahman.aufgabenmanager.user.BenutzerDtos.BenutzerAendern;
 import io.github.tarahman.aufgabenmanager.user.BenutzerDtos.BenutzerAnlegen;
 import io.github.tarahman.aufgabenmanager.user.BenutzerDtos.BenutzerAntwort;
+import io.github.tarahman.aufgabenmanager.user.BenutzerDtos.BenutzerAuswahl;
 import jakarta.validation.Valid;
 
 /**
@@ -41,6 +42,16 @@ class UserController {
 	@GetMapping
 	List<BenutzerAntwort> alle(@AuthenticationPrincipal CurrentUser angemeldet) {
 		return userService.alle(angemeldet);
+	}
+
+	/**
+	 * Auswahlliste aktiver Benutzer der eigenen Organisation (Leitung im Projektdialog, später Mitglieder und
+	 * Zuständige). Für alle Angemeldeten: Die Methoden-Annotation ersetzt die der Klasse.
+	 */
+	@GetMapping("/auswahl")
+	@PreAuthorize("isAuthenticated()")
+	List<BenutzerAuswahl> auswahl(@AuthenticationPrincipal CurrentUser angemeldet) {
+		return userService.auswahl(angemeldet);
 	}
 
 	/** 201 Created mit Location-Header auf den neuen Benutzer. */

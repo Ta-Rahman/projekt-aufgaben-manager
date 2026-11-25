@@ -13,6 +13,9 @@ export type AngemeldeterBenutzer = {
   rolle: Rolle
 }
 
+/** GET /api/users (nur ADMIN) */
+export type Benutzer = { id: number; benutzername: string; anzeigename: string; rolle: Rolle; aktiv: boolean }
+
 /** GET /api/users/auswahl */
 export type BenutzerAuswahl = { id: number; anzeigename: string; rolle: Rolle }
 

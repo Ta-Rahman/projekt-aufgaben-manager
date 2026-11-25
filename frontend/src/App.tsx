@@ -1,6 +1,6 @@
-import { Typography } from '@mui/material'
 import { Navigate, Route, Routes } from 'react-router'
 import GeschuetzteRoute from './auth/GeschuetzteRoute.tsx'
+import BenutzerSeite from './benutzer/BenutzerSeite.tsx'
 import AppLayout from './layout/AppLayout.tsx'
 import LoginSeite from './pages/LoginSeite.tsx'
 import NichtGefunden from './pages/NichtGefunden.tsx'
@@ -9,7 +9,6 @@ import ProjektUebersicht from './projekte/ProjektUebersicht.tsx'
 
 // Routen laut entwurf/Seiten.md. Alles außer /login liegt hinter GeschuetzteRoute und im AppLayout
 // (verschachtelte Route: AppLayout zeichnet die App-Leiste, <Outlet /> darin die jeweilige Seite).
-// Die Benutzerverwaltung folgt im nächsten Schritt.
 export default function App() {
   return (
     <Routes>
@@ -28,21 +27,12 @@ export default function App() {
           path="benutzer"
           element={
             <GeschuetzteRoute rollen={['ADMIN']}>
-              <Platzhalter titel="Benutzer" />
+              <BenutzerSeite />
             </GeschuetzteRoute>
           }
         />
         <Route path="*" element={<NichtGefunden />} />
       </Route>
     </Routes>
-  )
-}
-
-/** Vorläufig, bis die Seiten umgesetzt sind. */
-function Platzhalter({ titel }: { titel: string }) {
-  return (
-    <Typography variant="h4" component="h1">
-      {titel}
-    </Typography>
   )
 }

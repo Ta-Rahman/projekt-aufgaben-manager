@@ -114,6 +114,31 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<!--
+				Gebautes Frontend ins Jar: kopiert ../frontend/dist nach static/, Spring Boot liefert es von dort aus.
+				Vorher im Ordner frontend "npm run build" ausführen. Fehlt dist, überspringt Maven den Schritt
+				(Backend-Tests und CI laufen ohne Frontend-Build).
+			-->
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>frontend-kopieren</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.outputDirectory}/static</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${project.basedir}/../frontend/dist</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 

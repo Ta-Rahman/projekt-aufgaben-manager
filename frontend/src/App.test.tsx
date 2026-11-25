@@ -93,6 +93,31 @@ describe('Anmeldung und geschützte Routen', () => {
     expect(await screen.findByRole('heading', { name: 'Anmelden' })).toBeInTheDocument()
   })
 
+  it('nach dem Abmelden landet die nächste Person auf der Übersicht, nicht auf der Seite der vorigen', async () => {
+    document.cookie = 'XSRF-TOKEN=token-123'
+    let wer: AngemeldeterBenutzer | null = anna
+    fetchAttrappe({
+      'GET /api/auth/me': () => (wer ? { status: 200, json: wer } : { status: 401 }),
+      'POST /api/auth/logout': () => {
+        wer = null
+        return { status: 204 }
+      },
+      'POST /api/auth/login': () => {
+        wer = mia
+        return { status: 204 }
+      },
+    })
+    starteApp('/benutzer')
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Abmelden' }))
+    await userEvent.type(await screen.findByLabelText(/Benutzername/), 'mitarbeiter')
+    await userEvent.type(screen.getByLabelText(/Passwort/), 'demo')
+    await userEvent.click(screen.getByRole('button', { name: 'Anmelden' }))
+
+    expect(await screen.findByRole('heading', { name: 'Projekte' })).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: 'Seite nicht gefunden' })).not.toBeInTheDocument()
+  })
+
   it('zeigt bei unbekanntem Pfad die 404-Seite', async () => {
     fetchAttrappe({ 'GET /api/auth/me': { status: 200, json: mia } })
     starteApp('/gibt-es-nicht')

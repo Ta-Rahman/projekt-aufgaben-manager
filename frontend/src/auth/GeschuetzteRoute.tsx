@@ -17,7 +17,7 @@ type Props = {
  * Das ist nur Benutzerführung: Geschützt sind die Daten durch das Backend, nicht durch diese Komponente.
  */
 export default function GeschuetzteRoute({ children, rollen }: Props) {
-  const { benutzer } = useSitzung()
+  const { benutzer, abgemeldet } = useSitzung()
   const ort = useLocation()
 
   if (benutzer === undefined) {
@@ -28,7 +28,9 @@ export default function GeschuetzteRoute({ children, rollen }: Props) {
     )
   }
   if (benutzer === null) {
-    return <Navigate to="/login" replace state={{ von: ort.pathname }} />
+    // Nach ausdrücklichem Abmelden keine Zieladresse merken: Sonst landete die nächste angemeldete Person
+    // auf der Seite der vorigen (z. B. einem Projekt, das sie nicht sehen darf).
+    return <Navigate to="/login" replace state={abgemeldet ? undefined : { von: ort.pathname }} />
   }
   if (rollen && !rollen.includes(benutzer.rolle)) {
     return <NichtGefunden />

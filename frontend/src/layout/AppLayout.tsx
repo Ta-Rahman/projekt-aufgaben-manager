@@ -1,5 +1,5 @@
 import { AppBar, Box, Button, Container, Toolbar, Typography } from '@mui/material'
-import { NavLink, Outlet, useNavigate } from 'react-router'
+import { NavLink, Outlet } from 'react-router'
 import { useSitzung } from '../auth/Sitzung.tsx'
 
 // Gemeinsamer Rahmen aller Seiten nach dem Login (App-Leiste aus den Wireframes wf_02–wf_06):
@@ -11,13 +11,8 @@ const navLinkStil = {
 }
 
 export default function AppLayout() {
+  // Nach dem Abmelden leitet GeschuetzteRoute zur Login-Seite (ohne gemerkte Zieladresse).
   const { benutzer, abmelden } = useSitzung()
-  const navigate = useNavigate()
-
-  async function beimAbmelden() {
-    await abmelden()
-    navigate('/login', { replace: true })
-  }
 
   return (
     <>
@@ -40,7 +35,7 @@ export default function AppLayout() {
               {benutzer.anzeigename} ({benutzer.rolle})
             </Typography>
           )}
-          <Button color="inherit" variant="outlined" onClick={beimAbmelden}>
+          <Button color="inherit" variant="outlined" onClick={abmelden}>
             Abmelden
           </Button>
         </Toolbar>

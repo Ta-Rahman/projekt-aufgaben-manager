@@ -8,6 +8,8 @@ import type { AngemeldeterBenutzer } from '../api/typen.ts'
 type SitzungWert = {
   /** undefined = wird noch geladen, null = nicht angemeldet */
   benutzer: AngemeldeterBenutzer | null | undefined
+  /** true nach ausdrücklichem Abmelden: Die nächste Anmeldung startet dann auf der Projektübersicht. */
+  abgemeldet: boolean
   anmelden: (benutzername: string, passwort: string) => Promise<void>
   abmelden: () => Promise<void>
 }
@@ -27,6 +29,7 @@ async function ladeBenutzer(): Promise<AngemeldeterBenutzer | null> {
 
 export function SitzungProvider({ children }: { children: ReactNode }) {
   const [benutzer, setBenutzer] = useState<AngemeldeterBenutzer | null | undefined>(undefined)
+  const [abgemeldet, setAbgemeldet] = useState(false)
 
   useEffect(() => {
     let aktiv = true
@@ -43,14 +46,19 @@ export function SitzungProvider({ children }: { children: ReactNode }) {
     // Formular-Login von Spring Security: form-urlencoded, Antwort 204 oder 401.
     await api<void>('/api/auth/login', { methode: 'POST', formular: { username: benutzername, password: passwort } })
     setBenutzer(await ladeBenutzer())
+    setAbgemeldet(false)
   }, [])
 
   const abmelden = useCallback(async () => {
     await api<void>('/api/auth/logout', { methode: 'POST' })
+    setAbgemeldet(true)
     setBenutzer(null)
   }, [])
 
-  const wert = useMemo(() => ({ benutzer, anmelden, abmelden }), [benutzer, anmelden, abmelden])
+  const wert = useMemo(
+    () => ({ benutzer, abgemeldet, anmelden, abmelden }),
+    [benutzer, abgemeldet, anmelden, abmelden],
+  )
   return <SitzungKontext.Provider value={wert}>{children}</SitzungKontext.Provider>
 }
 

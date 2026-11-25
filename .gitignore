@@ -15,6 +15,10 @@ coverage/
 *.local
 npm-debug.log*
 
+# --- Playwright (Ergebnisse, Berichte; Screenshots liegen ohnehin außerhalb des Repos) ---
+test-results/
+playwright-report/
+
 # --- Umgebungsdateien (keine echten Zugangsdaten ins Repo) ---
 .env
 .env.*

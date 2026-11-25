@@ -41,6 +41,11 @@ class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
 	}
 
+	@ExceptionHandler(UngueltigeAnfrageException.class)
+	ProblemDetail ungueltig(UngueltigeAnfrageException ex) {
+		return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
+	}
+
 	/** {@code @Version} hat ein verlorenes Update verhindert (D8). */
 	@ExceptionHandler(ObjectOptimisticLockingFailureException.class)
 	ProblemDetail gleichzeitigGeaendert(ObjectOptimisticLockingFailureException ex) {

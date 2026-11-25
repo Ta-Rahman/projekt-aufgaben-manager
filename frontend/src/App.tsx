@@ -4,10 +4,12 @@ import GeschuetzteRoute from './auth/GeschuetzteRoute.tsx'
 import AppLayout from './layout/AppLayout.tsx'
 import LoginSeite from './pages/LoginSeite.tsx'
 import NichtGefunden from './pages/NichtGefunden.tsx'
+import ProjektDetailSeite from './projekte/ProjektDetailSeite.tsx'
+import ProjektUebersicht from './projekte/ProjektUebersicht.tsx'
 
 // Routen laut entwurf/Seiten.md. Alles außer /login liegt hinter GeschuetzteRoute und im AppLayout
 // (verschachtelte Route: AppLayout zeichnet die App-Leiste, <Outlet /> darin die jeweilige Seite).
-// Die Seiten Projektübersicht, Projektdetail und Benutzerverwaltung folgen im nächsten Abschnitt.
+// Die Benutzerverwaltung folgt im nächsten Schritt.
 export default function App() {
   return (
     <Routes>
@@ -20,8 +22,8 @@ export default function App() {
         }
       >
         <Route index element={<Navigate to="/projekte" replace />} />
-        <Route path="projekte" element={<Platzhalter titel="Projekte" />} />
-        <Route path="projekte/:id" element={<Platzhalter titel="Projekt" />} />
+        <Route path="projekte" element={<ProjektUebersicht />} />
+        <Route path="projekte/:id" element={<ProjektDetailSeite />} />
         <Route
           path="benutzer"
           element={

@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.hibernate.annotations.OptimisticLock;
+
 import io.github.tarahman.aufgabenmanager.common.Organisation;
 import io.github.tarahman.aufgabenmanager.common.Zeitstempel;
 import io.github.tarahman.aufgabenmanager.user.AppUser;
@@ -63,8 +65,13 @@ public class Project {
 	/**
 	 * Mitglieder (D1). Die Zeilen in {@code project_member} schreibt Hibernate selbst, sobald sich die Menge
 	 * ändert. {@code @ManyToMany} ist in JPA standardmäßig LAZY.
+	 *
+	 * <p>{@code @OptimisticLock(excluded = true)}: Hibernate würde sonst bei jeder Änderung der Mitglieder die
+	 * Projektversion erhöhen. Dann bekäme jemand, der gerade Name oder Zeitraum bearbeitet, einen 409, nur weil
+	 * parallel ein Mitglied hinzugefügt wurde. Mitglieder und Projektkopf werden getrennt bearbeitet (Reiter P2).
 	 */
 	@ManyToMany
+	@OptimisticLock(excluded = true)
 	@JoinTable(name = "project_member",
 			joinColumns = @JoinColumn(name = "project_id"),
 			inverseJoinColumns = @JoinColumn(name = "user_id"))

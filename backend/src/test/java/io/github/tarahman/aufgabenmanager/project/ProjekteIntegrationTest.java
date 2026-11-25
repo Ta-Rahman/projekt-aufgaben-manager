@@ -3,7 +3,6 @@ package io.github.tarahman.aufgabenmanager.project;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.empty;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -15,63 +14,15 @@ import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.RequestPostProcessor;
-import org.springframework.transaction.annotation.Transactional;
 
-import io.github.tarahman.aufgabenmanager.TestcontainersConfiguration;
-import io.github.tarahman.aufgabenmanager.auth.CurrentUser;
-import io.github.tarahman.aufgabenmanager.user.AppUser;
-import io.github.tarahman.aufgabenmanager.user.UserRepository;
+import io.github.tarahman.aufgabenmanager.ApiIntegrationTest;
 
 /**
- * US2, US6 und US8 über die REST-Schnittstelle gegen PostgreSQL mit den Seed-Daten (V2):
- *
- * <pre>
- * Relaunch Kundenportal   Leitung leitung,  Mitglieder mitarbeiter, ehemalig;   2 von 5 erledigt
- * Migration Mailserver    Leitung leitung2, Mitglieder mitarbeiter, mitarbeiter2; 1 von 3 erledigt
- * Inventur Hardware 2025  Leitung leitung,  Mitglied mitarbeiter, archiviert;   2 von 2 erledigt
- * </pre>
+ * US2, US6 und US8 über die REST-Schnittstelle gegen PostgreSQL mit den Seed-Daten (V2, siehe
+ * {@link ApiIntegrationTest}).
  */
-@SpringBootTest
-@AutoConfigureMockMvc
-@Import(TestcontainersConfiguration.class)
-@Transactional
-class ProjekteIntegrationTest {
-
-	static final String KUNDENPORTAL = "Relaunch Kundenportal";
-
-	static final String MAILSERVER = "Migration Mailserver";
-
-	static final String INVENTUR = "Inventur Hardware 2025";
-
-	@Autowired
-	MockMvc mockMvc;
-
-	@Autowired
-	UserRepository userRepository;
-
-	@Autowired
-	ProjectRepository projectRepository;
-
-	private RequestPostProcessor als(String benutzername) {
-		AppUser u = userRepository.findByUsername(benutzername).orElseThrow();
-		return user(new CurrentUser(u.getId(), u.getOrganisation().getId(), u.getUsername(), u.getDisplayName(),
-				u.getRole(), u.isActive(), null));
-	}
-
-	private Long projektId(String name) {
-		return projectRepository.findAll().stream().filter(p -> p.getName().equals(name)).findFirst().orElseThrow().getId();
-	}
-
-	private Long benutzerId(String benutzername) {
-		return userRepository.findByUsername(benutzername).orElseThrow().getId();
-	}
+class ProjekteIntegrationTest extends ApiIntegrationTest {
 
 	// ---------- US8: Sichtbarkeit ----------
 

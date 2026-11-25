@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -16,51 +15,24 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.RequestPostProcessor;
-import org.springframework.transaction.annotation.Transactional;
 
-import io.github.tarahman.aufgabenmanager.TestcontainersConfiguration;
-import io.github.tarahman.aufgabenmanager.auth.CurrentUser;
+import io.github.tarahman.aufgabenmanager.ApiIntegrationTest;
 import io.github.tarahman.aufgabenmanager.common.Organisation;
 import io.github.tarahman.aufgabenmanager.common.OrganisationRepository;
 
 /**
  * US1 über die REST-Schnittstelle: echte Security-Kette, echte Validierung, echte Datenbank mit Seed (V2).
- *
- * <p>{@code @Transactional} an der Testklasse: Jeder Test läuft in einer Transaktion, die am Ende
- * zurückgerollt wird. MockMvc ruft den Controller im selben Thread auf, daher gehören auch die
- * Datenbankzugriffe der Anwendung zu dieser Transaktion. Die Tests beeinflussen sich so nicht gegenseitig.
+ * Rahmen (Transaktion je Test, Seed-Daten) in {@link ApiIntegrationTest}.
  */
-@SpringBootTest
-@AutoConfigureMockMvc
-@Import(TestcontainersConfiguration.class)
-@Transactional
-class BenutzerverwaltungIntegrationTest {
-
-	@Autowired
-	MockMvc mockMvc;
-
-	@Autowired
-	UserRepository userRepository;
+class BenutzerverwaltungIntegrationTest extends ApiIntegrationTest {
 
 	@Autowired
 	OrganisationRepository organisationRepository;
 
 	@Autowired
 	PasswordEncoder passwordEncoder;
-
-	/** Meldet einen Seed-Benutzer für eine einzelne Anfrage an, ohne den Login-Ablauf zu durchlaufen. */
-	private RequestPostProcessor als(String benutzername) {
-		AppUser u = userRepository.findByUsername(benutzername).orElseThrow();
-		return user(new CurrentUser(u.getId(), u.getOrganisation().getId(), u.getUsername(), u.getDisplayName(),
-				u.getRole(), u.isActive(), null));
-	}
 
 	@Test
 	void adminSiehtAlleBenutzerDerOrganisation() throws Exception {
